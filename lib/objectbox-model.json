@@ -1,0 +1,131 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:2391695569417533994",
+      "lastPropertyId": "16:5281286302973097412",
+      "name": "Song",
+      "properties": [
+        {
+          "id": "1:2282628691080034565",
+          "name": "id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:1037189200550608842",
+          "name": "title",
+          "type": 9
+        },
+        {
+          "id": "3:6249714530244300952",
+          "name": "artist",
+          "type": 9
+        },
+        {
+          "id": "4:9007100993019695209",
+          "name": "duration",
+          "type": 6
+        },
+        {
+          "id": "5:1289837527955793159",
+          "name": "filePath",
+          "type": 9
+        },
+        {
+          "id": "6:3525172633175401922",
+          "name": "audioImgUri",
+          "type": 9
+        },
+        {
+          "id": "8:5337996225307204971",
+          "name": "lyrics",
+          "type": 9
+        },
+        {
+          "id": "10:2747283427792566903",
+          "name": "uuid",
+          "type": 9
+        },
+        {
+          "id": "11:4932846698851974252",
+          "name": "isOnlineSearch",
+          "type": 1
+        },
+        {
+          "id": "12:3166170638286190911",
+          "name": "amplitude",
+          "type": 9
+        },
+        {
+          "id": "13:3835736624456525778",
+          "name": "timestampLyrics",
+          "type": 9
+        },
+        {
+          "id": "15:4359083438157976561",
+          "name": "vocalPath",
+          "type": 9
+        },
+        {
+          "id": "16:5281286302973097412",
+          "name": "instrumentalPath",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:574910457787558532",
+      "lastPropertyId": "4:4258339789670784521",
+      "name": "Playlist",
+      "properties": [
+        {
+          "id": "1:8715050878172679852",
+          "name": "id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:5382294283011522263",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:6626809982927991766",
+          "name": "description",
+          "type": 9
+        },
+        {
+          "id": "4:4258339789670784521",
+          "name": "uuid",
+          "type": 9
+        }
+      ],
+      "relations": [
+        {
+          "id": "1:1975785208170448372",
+          "name": "songs",
+          "targetId": "1:2391695569417533994"
+        }
+      ]
+    }
+  ],
+  "lastEntityId": "2:574910457787558532",
+  "lastIndexId": "0:0",
+  "lastRelationId": "1:1975785208170448372",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [
+    297405223260085423,
+    484050272339201901,
+    4258461524366401951
+  ],
+  "retiredRelationUids": [],
+  "version": 1
+}

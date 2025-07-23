@@ -1,107 +1,172 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:io';
+import 'dart:math' as developer;
 
-void main() {
-  runApp(const MyApp());
+import 'package:audio_service/audio_service.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart';
+import 'package:music_player/screens/karaoke/karaoke.dart';
+import 'package:music_player/services/audio_handler.dart';
+import 'package:music_player/utils/response_handler.dart';
+import 'package:path_provider/path_provider.dart';
+import 'screens/music_list/music_list_screen.dart';
+import 'screens/music_player/music_player_screen.dart';
+import 'screens/playlists/playlists_screen.dart';
+import 'objectbox.g.dart';
+import 'objectbox.dart';
+import 'state/audio_state.dart';
+
+late AudioHandler audioHandler;
+// One-to-Many: Một playlist có thể chứa nhiều bài hát
+late ObjectBox objectBox;
+
+Future<void> deleteDatabase() async {
+  final appDir = await getApplicationDocumentsDirectory();
+  final objectBoxDir = Directory('${appDir.path}/objectbox');
+
+  if (await objectBoxDir.exists()) {
+    await objectBoxDir.delete(recursive: true);
+    print('ObjectBox database deleted.');
+  } else {
+    print('ObjectBox database not found.');
+  }
+}
+
+Future<void> initializeObjectBox() async {
+  try {
+    objectBox = await ObjectBox.create();
+  } catch (e) {
+    print("Schema mismatch detected. Flushing database...");
+    await deleteDatabase(); // Delete the database manually
+    objectBox = await ObjectBox.create();
+    print("Database flushed and reinitialized.");
+  }
+}
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await initializeAppStorage();
+
+  audioHandler =
+      await initAudioService(); // Ensure this completes before running the app
+
+  await initializeObjectBox();
+
+  runApp(ProviderScope(child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Music Player App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MainTabScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class MainTabScreen extends ConsumerStatefulWidget {
+  const MainTabScreen({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  ConsumerState<MainTabScreen> createState() => _MainTabScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _MainTabScreenState extends ConsumerState<MainTabScreen> {
+  int _selectedIndex = 0;
 
-  void _incrementCounter() {
+  final List<ConnectivityResult> _connectionStatus = [ConnectivityResult.none];
+  final Connectivity _connectivity = Connectivity();
+  late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Listen for internet connection changes
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen(
+      _updateConnectionStatus,
+    );
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription
+        .cancel(); // Cancel the subscription when the widget is disposed
+    super.dispose();
+  }
+
+  Future<void> initConnectivity() async {
+    late List<ConnectivityResult> result;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException {
+      // developer.log('Couldn\'t check connectivity status' as num, error: e);
+      return;
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) {
+      return Future.value(null);
+    }
+
+    return _updateConnectionStatus(result);
+  }
+
+  Future<void> _updateConnectionStatus(List<ConnectivityResult> result) async {
+    final hasInternet = result != ConnectivityResult.none;
+
+    // Update Riverpod state dynamically
+    ref.read(internetConnectionProvider.notifier).state = hasInternet;
+    // ignore: avoid_print
+    print('Connectivity changed: $_connectionStatus');
+  }
+
+  static const List<Widget> _screens = <Widget>[
+    MusicListScreen(),
+    PlaylistsScreen(),
+    // KaraokeScreen(),
+  ];
+
+  static const List<BottomNavigationBarItem> _navItems = [
+    BottomNavigationBarItem(
+      icon: Icon(Icons.library_music),
+      label: 'Music List',
+    ),
+    BottomNavigationBarItem(icon: Icon(Icons.queue_music), label: 'Playlists'),
+    // BottomNavigationBarItem(
+    //   icon: Icon(Icons.mic),
+    //   label: 'Karaoke', // Thêm mục Karaoke
+    // ),
+  ];
+
+  void _onItemTapped(int index) {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      _selectedIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        items: _navItems,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
