@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 
 class ApiService {
   final Dio _dio;
@@ -21,16 +22,16 @@ class ApiService {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
-          print('Request: ${options.method} ${options.path}');
-          print('Full URL: ${options.baseUrl}${options.path}');
+          debugPrint('Request: ${options.method} ${options.path}');
+          debugPrint('Full URL: ${options.baseUrl}${options.path}');
           return handler.next(options); // Continue the request
         },
         onResponse: (response, handler) {
-          print('Response: ${response.statusCode} ${response.data}');
+          debugPrint('Response: ${response.statusCode} ${response.data}');
           return handler.next(response); // Continue the response
         },
-        onError: (DioError e, handler) {
-          print('Error: ${e.response?.statusCode} ${e.message}');
+        onError: (DioException e, handler) {
+          debugPrint('Error: ${e.response?.statusCode} ${e.message}');
           return handler.next(e); // Continue the error
         },
       ),

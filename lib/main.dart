@@ -1,20 +1,26 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math' as developer;
 
 import 'package:audio_service/audio_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart';
-import 'package:music_player/screens/karaoke/karaoke.dart';
+import 'package:music_player/screens/create/audio_file/audio_device.dart';
+import 'package:music_player/screens/create/audio_file/audio_options.dart';
+import 'package:music_player/screens/create/infor/infor_screen.dart';
+import 'package:music_player/screens/create/audio_file/mp3_from_youtube.dart';
+import 'package:music_player/screens/create/lyrics/lyrics_manually.dart';
+import 'package:music_player/screens/create/lyrics/lyrics_options.dart';
+import 'package:music_player/screens/db/db_manager.dart';
+import 'package:music_player/screens/storage/file_explorer_screen.dart';
+import 'package:music_player/screens/karaoke_player/karaoke_player_screen.dart';
+import 'package:music_player/screens/library/library_screen.dart';
+import 'package:music_player/screens/splash/splash_screen.dart';
 import 'package:music_player/services/audio_handler.dart';
 import 'package:music_player/utils/response_handler.dart';
 import 'package:path_provider/path_provider.dart';
 import 'screens/music_list/music_list_screen.dart';
-import 'screens/music_player/music_player_screen.dart';
-import 'screens/playlists/playlists_screen.dart';
 import 'objectbox.g.dart';
 import 'objectbox.dart';
 import 'state/audio_state.dart';
@@ -70,6 +76,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home: const MainTabScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -134,18 +141,14 @@ class _MainTabScreenState extends ConsumerState<MainTabScreen> {
     print('Connectivity changed: $_connectionStatus');
   }
 
-  static const List<Widget> _screens = <Widget>[
-    MusicListScreen(),
-    PlaylistsScreen(),
-    // KaraokeScreen(),
-  ];
+  // static const List<Widget> _screens = <Widget>[MusicListScreen()];
 
   static const List<BottomNavigationBarItem> _navItems = [
     BottomNavigationBarItem(
       icon: Icon(Icons.library_music),
       label: 'Music List',
     ),
-    BottomNavigationBarItem(icon: Icon(Icons.queue_music), label: 'Playlists'),
+    // BottomNavigationBarItem(icon: Icon(Icons.queue_music), label: 'Playlists'),
     // BottomNavigationBarItem(
     //   icon: Icon(Icons.mic),
     //   label: 'Karaoke', // Thêm mục Karaoke
@@ -158,14 +161,44 @@ class _MainTabScreenState extends ConsumerState<MainTabScreen> {
     });
   }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     body: _screens[_selectedIndex],
+  //     bottomNavigationBar: BottomNavigationBar(
+  //       items: _navItems,
+  //       currentIndex: _selectedIndex,
+  //       onTap: _onItemTapped,
+  //     ),
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        systemNavigationBarColor: Color.fromRGBO(49, 49, 49, 1.0),
+        statusBarColor: Color.fromRGBO(49, 49, 49, 1.0),
+      ),
+    );
+
+    // SplashScreen()
+    // LyricsManuallyScreen()
+    // Mp3FromYoutubeScreen()
+    // AudioDeviceScreen()
+    /*    
+      AudioDeviceScreen(
+        fileType: AudioFileType.text,
+      ) 
+      */
+    // InforScreen()
+    // LyricsOptionsScreen()
+    // LibraryScreen()
+
     return Scaffold(
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: _navItems,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+      backgroundColor: Color.fromRGBO(49, 49, 49, 1.0),
+      body: SizedBox.expand(
+        child: LibraryScreen(), // hoặc SvgPicture.asset(...)
       ),
     );
   }

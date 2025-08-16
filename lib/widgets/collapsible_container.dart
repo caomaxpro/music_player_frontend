@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:music_player/utils/convert_lrc_to_json.dart';
+import 'package:music_player/screens/create/lyrics/utils/convert_lrc_to_json.dart';
 
 class CollapsibleText extends StatefulWidget {
   final List<Widget>? content;

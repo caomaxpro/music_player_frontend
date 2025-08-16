@@ -64,7 +64,6 @@ class DataProcessing {
             lyrics: "", // Can be updated later
             amplitude: "",
             timestampLyrics: "",
-            isOnlineSearch: false,
           );
         }).toList();
     debugPrint('Songs mapped to Song objects.');
@@ -87,7 +86,7 @@ class DataProcessing {
     debugPrint('Songs converted to display format.');
 
     // Save to Riverpod state using AudioStateNotifier
-    ref.read(audioFilesProvider.notifier).state = displaySongs;
+    ref.read(audioFilesProvider.notifier).state = displaySongs.cast<Song>();
     debugPrint('Songs saved to Riverpod state.');
   }
 

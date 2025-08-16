@@ -5,7 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io';
 import 'package:music_player/state/audio_state.dart';
-import 'package:music_player/utils/convert_lrc_to_json.dart';
+import 'package:music_player/screens/create/lyrics/utils/convert_lrc_to_json.dart';
 import 'package:music_player/utils/datatype_converter.dart';
 import 'package:music_player/widgets/custom_textarea.dart';
 
@@ -79,9 +79,13 @@ class _LyricsPickerCardState extends ConsumerState<LyricsPickerCard> {
                     // Update Riverpod state
                     File file = File(filePath);
                     String fileLyrics = await file.readAsString();
-                    ref.read(currentAudioFileProvider.notifier).update((state) {
-                      return {...state, 'lyrics': fileLyrics};
-                    });
+
+                    final updatedCurrentAudioFile = currentAudioFile.copyWith(
+                      lyrics: fileLyrics,
+                    );
+
+                    ref.read(currentAudioFileProvider.notifier).state =
+                        updatedCurrentAudioFile;
                   } else {
                     setState(() {
                       errorMessage =
@@ -243,23 +247,18 @@ class _LyricsPickerCardState extends ConsumerState<LyricsPickerCard> {
 
                           debugPrint("[Refined Lyrics]: $refinedLyrics");
 
+                          final currentAudioFile = ref.read(
+                            currentAudioFileProvider,
+                          );
+
+                          final updatedAudioFile = currentAudioFile.copyWith(
+                            lyrics: refinedLyrics,
+                            timestampLyrics: listToString(parsedLyrics),
+                          );
+
                           // Update Riverpod state
-                          ref.read(currentAudioFileProvider.notifier).update((
-                            state,
-                          ) {
-                            debugPrint(
-                              'Before update: $state',
-                            ); // Log the state before the update
-                            final updatedState = {
-                              ...state,
-                              'lyrics': refinedLyrics,
-                              'timestampLyrics': listToString(parsedLyrics),
-                            };
-                            debugPrint(
-                              'After update: $updatedState',
-                            ); // Log the state after the update
-                            return updatedState;
-                          });
+                          ref.read(currentAudioFileProvider.notifier).state =
+                              updatedAudioFile;
                         }
                       },
                       style: ElevatedButton.styleFrom(

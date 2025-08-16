@@ -38,59 +38,70 @@ class SongHandler {
 
     // update a song in a list of audio files
     ref.read(audioFilesProvider.notifier).state =
-        songs.map((song) {
-          if (song["id"] == id) {
-            final updatedSong = {...song, ...updatedFields};
+        songs
+            .map((song) {
+              if (song.id == id) {
+                final updatedSong = Song(
+                  id: song.id,
+                  title: updatedFields['title'] ?? song.title,
+                  artist: updatedFields['artist'] ?? song.artist,
+                  duration: updatedFields['duration'] ?? song.duration,
+                  filePath: updatedFields['filePath'] ?? song.filePath,
+                  audioImgUri: updatedFields['audioImgUri'] ?? song.audioImgUri,
+                  lyrics: updatedFields['lyrics'] ?? song.lyrics,
+                  amplitude: updatedFields['amplitude'] ?? song.amplitude,
+                  vocalPath: updatedFields['vocalPath'] ?? song.vocalPath,
+                  instrumentalPath:
+                      updatedFields['instrumentalPath'] ??
+                      song.instrumentalPath,
+                );
 
-            ref.read(currentAudioFileProvider.notifier).state = song;
+                ref.read(currentAudioFileProvider.notifier).state = updatedSong;
 
-            return updatedSong; // Cập nhật các trường
-          }
-          return song;
-        }).toList();
+                return updatedSong; // Cập nhật các trường
+              }
+              return song;
+            })
+            .toList()
+            .cast<Song>();
   }
 
-  void updateSongInDB({required int id, required Map<String, dynamic> fields}) {
-    final song = box.get(id); // Tìm bài hát theo ID
+  void updateSongInDB({required Song updatedSong}) {
+    final song = box.get(updatedSong.id); // Find song by ID
     if (song != null) {
-      // Cập nhật các trường nếu có trong `fields`
-      song.title = fields['title'] ?? song.title;
-      song.artist = fields['artist'] ?? song.artist;
-      song.duration = fields['duration'] ?? song.duration;
-      song.filePath = fields['filePath'] ?? song.filePath;
-      song.audioImgUri = fields['audioImgUri'] ?? song.audioImgUri;
-      song.lyrics = fields['lyrics'] ?? song.lyrics;
-      song.amplitude = fields['amplitude'] ?? song.amplitude;
-      song.isOnlineSearch = fields['isOnlineSearch'] ?? song.isOnlineSearch;
-      song.vocalPath = fields["vocalPath"] ?? song.vocalPath;
-      song.instrumentalPath =
-          fields["instrumentalPath"] ?? song.instrumentalPath;
+      // Update all fields from updatedSong
+      song.title = updatedSong.title;
+      song.artist = updatedSong.artist;
+      song.duration = updatedSong.duration;
+      song.filePath = updatedSong.filePath;
+      song.audioImgUri = updatedSong.audioImgUri;
+      song.lyrics = updatedSong.lyrics;
+      song.amplitude = updatedSong.amplitude;
+      song.vocalPath = updatedSong.vocalPath;
+      song.instrumentalPath = updatedSong.instrumentalPath;
 
-      // Lưu lại đối tượng đã cập nhật
+      // Save the updated object
       box.put(song);
-      debugPrint('Fields updated for song with ID: $id');
+      debugPrint('Song updated for ID: ${updatedSong.id}');
     } else {
-      debugPrint('Song with ID $id not found in database.');
+      debugPrint('Song with ID ${updatedSong.id} not found in database.');
     }
   }
 
-  void updateSong({
-    required WidgetRef ref,
-    required int id,
-    required Map<String, dynamic> updatedFields,
-  }) {
-    updateSongInDB(id: id, fields: updatedFields);
-    updateSongInState(ref, id, updatedFields);
-  }
+  // void updateSong({
+  //   required WidgetRef ref,
+  //   required int id,
+  //   required Map<String, dynamic> updatedFields,
+  // }) {
+  //   updateSongInDB(id: id, fields: updatedFields);
+  //   updateSongInState(ref, id, updatedFields);
+  // }
 
   /// Delete: Xóa một bài hát theo ID
   bool deleteSong(int id) {
     return box.remove(id);
   }
 
-  /* 
-    remove all song's related data including audio file path, vocal path, instrumental path and then that song in db
-   */
   void cleanSongData(WidgetRef ref, int id) {
     final song = box.get(id); // Lấy bài hát theo ID
 
@@ -121,20 +132,12 @@ class SongHandler {
       // Cập nhật trạng thái Riverpod
       final songs = ref.read(audioFilesProvider);
       ref.read(audioFilesProvider.notifier).state =
-          songs.where((song) => song["id"] != id).toList();
+          songs.where((song) => song.id != id).toList();
 
       // Nếu bài hát hiện tại là bài hát vừa bị xóa, đặt trạng thái `currentAudioFileProvider` về mặc định
       final currentAudioFile = ref.read(currentAudioFileProvider);
-      if (currentAudioFile["id"] == id) {
-        ref.read(currentAudioFileProvider.notifier).state = {
-          "id": 0,
-          "title": "",
-          "artist": "",
-          "duration": 0,
-          "filePath": "",
-          "audioImgUri": "",
-          "isOnlineSearch": false,
-        };
+      if (currentAudioFile.id == id) {
+        ref.read(currentAudioFileProvider.notifier).state = Song();
       }
     } else {
       debugPrint('Song with ID $id not found in database.');
@@ -171,15 +174,7 @@ class SongHandler {
 
     // Cập nhật trạng thái Riverpod
     ref.read(audioFilesProvider.notifier).state = [];
-    ref.read(currentAudioFileProvider.notifier).state = {
-      "id": 0,
-      "title": "",
-      "artist": "",
-      "duration": 0,
-      "filePath": "",
-      "audioImgUri": "",
-      "isOnlineSearch": false,
-    };
+    ref.read(currentAudioFileProvider.notifier).state = Song();
 
     debugPrint('All songs and related files deleted successfully.');
   }

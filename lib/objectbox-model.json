@@ -4,128 +4,94 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:2391695569417533994",
-      "lastPropertyId": "16:5281286302973097412",
+      "id": "1:8821277811218544115",
+      "lastPropertyId": "14:7313911926261287548",
       "name": "Song",
       "properties": [
         {
-          "id": "1:2282628691080034565",
+          "id": "1:6488944693296695625",
           "name": "id",
           "type": 6,
           "flags": 129
         },
         {
-          "id": "2:1037189200550608842",
+          "id": "2:563570291174276779",
+          "name": "uuid",
+          "type": 9
+        },
+        {
+          "id": "3:6167011765445137370",
           "name": "title",
           "type": 9
         },
         {
-          "id": "3:6249714530244300952",
+          "id": "4:6883516046890042815",
           "name": "artist",
           "type": 9
         },
         {
-          "id": "4:9007100993019695209",
+          "id": "5:5626970840388193135",
           "name": "duration",
           "type": 6
         },
         {
-          "id": "5:1289837527955793159",
+          "id": "6:6950630416761939253",
           "name": "filePath",
           "type": 9
         },
         {
-          "id": "6:3525172633175401922",
-          "name": "audioImgUri",
-          "type": 9
-        },
-        {
-          "id": "8:5337996225307204971",
-          "name": "lyrics",
-          "type": 9
-        },
-        {
-          "id": "10:2747283427792566903",
-          "name": "uuid",
-          "type": 9
-        },
-        {
-          "id": "11:4932846698851974252",
-          "name": "isOnlineSearch",
-          "type": 1
-        },
-        {
-          "id": "12:3166170638286190911",
-          "name": "amplitude",
-          "type": 9
-        },
-        {
-          "id": "13:3835736624456525778",
-          "name": "timestampLyrics",
-          "type": 9
-        },
-        {
-          "id": "15:4359083438157976561",
+          "id": "7:5477606557243311434",
           "name": "vocalPath",
           "type": 9
         },
         {
-          "id": "16:5281286302973097412",
+          "id": "8:4252804410467501000",
           "name": "instrumentalPath",
           "type": 9
+        },
+        {
+          "id": "9:5411544786149217022",
+          "name": "audioImgUri",
+          "type": 9
+        },
+        {
+          "id": "10:2231009584145218245",
+          "name": "lyrics",
+          "type": 9
+        },
+        {
+          "id": "11:6988265277597161522",
+          "name": "amplitude",
+          "type": 9
+        },
+        {
+          "id": "12:732563055709382247",
+          "name": "timestampLyrics",
+          "type": 9
+        },
+        {
+          "id": "13:909824457456036851",
+          "name": "createdDate",
+          "type": 10
+        },
+        {
+          "id": "14:7313911926261287548",
+          "name": "recentDate",
+          "type": 10
         }
       ],
       "relations": []
-    },
-    {
-      "id": "2:574910457787558532",
-      "lastPropertyId": "4:4258339789670784521",
-      "name": "Playlist",
-      "properties": [
-        {
-          "id": "1:8715050878172679852",
-          "name": "id",
-          "type": 6,
-          "flags": 129
-        },
-        {
-          "id": "2:5382294283011522263",
-          "name": "name",
-          "type": 9
-        },
-        {
-          "id": "3:6626809982927991766",
-          "name": "description",
-          "type": 9
-        },
-        {
-          "id": "4:4258339789670784521",
-          "name": "uuid",
-          "type": 9
-        }
-      ],
-      "relations": [
-        {
-          "id": "1:1975785208170448372",
-          "name": "songs",
-          "targetId": "1:2391695569417533994"
-        }
-      ]
     }
   ],
-  "lastEntityId": "2:574910457787558532",
+  "lastEntityId": "1:8821277811218544115",
   "lastIndexId": "0:0",
-  "lastRelationId": "1:1975785208170448372",
+  "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [
-    297405223260085423,
-    484050272339201901,
-    4258461524366401951
-  ],
+  "retiredPropertyUids": [],
   "retiredRelationUids": [],
   "version": 1
 }

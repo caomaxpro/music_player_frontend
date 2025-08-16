@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:music_player/api/api_instance.dart';
+import 'package:music_player/models/song.dart';
 import 'package:music_player/services/song_handler.dart';
 import 'dart:convert';
 
@@ -12,7 +13,7 @@ import 'package:music_player/state/audio_state.dart';
 import 'package:music_player/utils/datatype_converter.dart';
 import 'package:music_player/utils/response_handler.dart';
 import 'package:music_player/widgets/collapsible_container.dart';
-import 'package:music_player/utils/convert_lrc_to_json.dart';
+import 'package:music_player/screens/create/lyrics/utils/convert_lrc_to_json.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'ui/audio_file_card.dart';
 import 'ui/lyrics_card.dart';
@@ -35,7 +36,7 @@ class _KaraokeScreenState extends ConsumerState<KaraokeScreen> {
   // data status
   late bool isKaraokeReady;
 
-  late Map<String, dynamic> currentAudioFile;
+  late Song currentAudioFile;
 
   @override
   void initState() {
@@ -56,10 +57,10 @@ class _KaraokeScreenState extends ConsumerState<KaraokeScreen> {
    */
 
   bool checkKaraokeConditions() {
-    if (currentAudioFile["vocalPath"] != '' &&
-        currentAudioFile["instrumentalPath"] != "" &&
-        currentAudioFile["amplitude"] != "" &&
-        currentAudioFile["timestampLyrics"] != "") {
+    if (currentAudioFile.vocalPath != '' &&
+        currentAudioFile.instrumentalPath != "" &&
+        currentAudioFile.amplitude != "" &&
+        currentAudioFile.timestampLyrics != "") {
       return true;
     }
 
@@ -90,42 +91,17 @@ class _KaraokeScreenState extends ConsumerState<KaraokeScreen> {
 
     debugPrint("[Karaoke]: $storagePath");
 
+    final updatedAudioFile = ref
+        .read(currentAudioFileProvider)
+        .copyWith(
+          vocalPath: storagePath!["vocal"],
+          instrumentalPath: storagePath["accompaniment"],
+          amplitude: computedAmplitude.toString(),
+          timestampLyrics: adjustedTimestamp.toString(),
+        );
+
     // step 3: save file paths to db
-    songHandler.updateSong(
-      ref: ref,
-      id: currentAudioFile["id"],
-      updatedFields: {
-        "vocalPath": storagePath!["vocal"],
-        "instrumentalPath": storagePath["accompaniment"],
-        "amplitude": computedAmplitude.toString(),
-        "timestampLyrics": adjustedTimestamp.toString(),
-      },
-    );
-
-    // step 4: update audio list state and current state
-    final List<Map<String, dynamic>> audioFiles = ref.read(audioFilesProvider);
-
-    final updatedAudioFilesState =
-        audioFiles.map((file) {
-          if (file["id"] == currentAudioFile["id"]) {
-            return {
-              ...file,
-              "vocalPath": storagePath["vocal"],
-              "instrumentalPath": storagePath["accompaniment"],
-              "amplitude": computedAmplitude.toString(),
-              "timestampLyrics": adjustedTimestamp.toString(),
-            };
-          }
-          return file;
-        }).toList();
-
-    ref.read(audioFilesProvider.notifier).state = updatedAudioFilesState;
-
-    final updatedItem = updatedAudioFilesState.firstWhere(
-      (file) => file["id"] == currentAudioFile["id"],
-    );
-
-    ref.read(currentAudioFileProvider.notifier).state = updatedItem;
+    songHandler.updateSongInDB(updatedSong: updatedAudioFile);
 
     debugPrint('Adjusted Timestamp: $adjustedTimestamp');
     debugPrint('Computed Amplitude: $computedAmplitude');
@@ -185,21 +161,21 @@ class _KaraokeScreenState extends ConsumerState<KaraokeScreen> {
     final internetConnection = ref.watch(internetConnectionProvider);
 
     // Lấy lyrics mới nhất từ state
-    final lyrics = currentAudioFile['timestampLyrics'] ?? 'No lyrics available';
+    final lyrics = currentAudioFile.timestampLyrics;
     List<List<String>> displayLyrics;
 
     // check if data in timestamp lyrics is valid or not, if not then change the way it is processed
 
-    debugPrint("[Valid Lyrics] ${currentAudioFile['timestampLyrics']}");
+    debugPrint("[Valid Lyrics] ${currentAudioFile.timestampLyrics}");
 
     bool isLyricsInLRCFormat = isValidLrcFormat(
-      currentAudioFile['timestampLyrics'],
+      currentAudioFile.timestampLyrics,
     );
 
     debugPrint("[Valid Lyrics] $isLyricsInLRCFormat");
 
     // check if the lyrics is in correct format
-    if (isLyricsInLRCFormat && currentAudioFile['timestampLyrics'] != "") {
+    if (isLyricsInLRCFormat && currentAudioFile.timestampLyrics != "") {
       final lrcParts = splitLrcMetaAndLyrics(lyrics);
       final meta = lrcParts['meta'] ?? '';
       final lyricsRaw = lrcParts['lyrics'] ?? '';
@@ -209,9 +185,8 @@ class _KaraokeScreenState extends ConsumerState<KaraokeScreen> {
       displayLyrics = parsedLyrics;
     }
     // if it is not
-    else if (!isLyricsInLRCFormat &&
-        currentAudioFile['timestampLyrics'] != "") {
-      displayLyrics = stringToList(currentAudioFile['timestampLyrics']);
+    else if (!isLyricsInLRCFormat && currentAudioFile.timestampLyrics != "") {
+      displayLyrics = stringToList(currentAudioFile.timestampLyrics);
     }
 
     return Scaffold(
@@ -246,14 +221,18 @@ class _KaraokeScreenState extends ConsumerState<KaraokeScreen> {
               onLyricsSelected: (filePath) async {
                 File file = File(filePath);
                 String fileLyrics = await file.readAsString();
-                ref.read(currentAudioFileProvider.notifier).update((state) {
-                  return {...state, 'lyrics': fileLyrics, 'filePath': filePath};
-                });
+
+                currentAudioFile.lyrics = fileLyrics;
+                currentAudioFile.filePath = filePath;
+
+                ref.read(currentAudioFileProvider.notifier).state =
+                    currentAudioFile;
               },
               onLyricsEntered: (enteredLyrics) {
-                ref.read(currentAudioFileProvider.notifier).update((state) {
-                  return {...state, 'lyrics': enteredLyrics};
-                });
+                currentAudioFile.lyrics = enteredLyrics;
+
+                ref.read(currentAudioFileProvider.notifier).state =
+                    currentAudioFile;
               },
               onTranscribeAudio: (audioFile) {
                 debugPrint('Transcribing audio file: ${audioFile.path}');
@@ -268,8 +247,8 @@ class _KaraokeScreenState extends ConsumerState<KaraokeScreen> {
                 debugPrint("activate loading button");
 
                 sendKaraokeRequest(
-                  currentAudioFile["filePath"],
-                  currentAudioFile["timestampLyrics"],
+                  currentAudioFile.filePath,
+                  currentAudioFile.timestampLyrics,
                 );
               },
             ),
@@ -288,10 +267,8 @@ class KaraokeButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentAudioFile = ref.watch(currentAudioFileProvider);
     final enabled =
-        currentAudioFile['filePath'] != null &&
-        currentAudioFile['filePath'].isNotEmpty &&
-        currentAudioFile['timestampLyrics'] != null &&
-        currentAudioFile['timestampLyrics'].isNotEmpty;
+        currentAudioFile.filePath.isNotEmpty &&
+        currentAudioFile.timestampLyrics.isNotEmpty;
 
     return Center(
       child: ElevatedButton(
@@ -312,7 +289,7 @@ class KaraokeLyricsTable extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentAudioFile = ref.watch(currentAudioFileProvider);
-    final lyrics = currentAudioFile['timestampLyrics'] ?? 'No lyrics available';
+    final lyrics = currentAudioFile.timestampLyrics ?? 'No lyrics available';
 
     final lrcParts = splitLrcMetaAndLyrics(lyrics);
     final meta = lrcParts['meta'] ?? '';
@@ -321,9 +298,9 @@ class KaraokeLyricsTable extends ConsumerWidget {
     final parsedMeta = parseLrcMeta(meta);
     final parsedLyrics = parseLrcLyrics(lyricsRaw);
 
-    debugPrint("[Timestamp Lyrics]: ${currentAudioFile["timestampLyrics"]}");
+    debugPrint("[Timestamp Lyrics]: ${currentAudioFile.timestampLyrics}");
 
-    if (currentAudioFile["timestampLyrics"] == "") {
+    if (currentAudioFile.timestampLyrics == "") {
       return Container(
         width: getScreenWidth(context) * 0.95,
         margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -396,31 +373,7 @@ class KaraokeLyricsTable extends ConsumerWidget {
 
     return CollapsibleText(
       content: [
-        // Table 1: Meta info
-        // Table(
-        //   columnWidths: const {0: FixedColumnWidth(100), 1: FlexColumnWidth()},
-        //   defaultVerticalAlignment: TableCellVerticalAlignment.top,
-        //   children: [
-        //     for (final row in parsedMeta)
-        //       TableRow(
-        //         children: [
-        //           Padding(
-        //             padding: const EdgeInsets.symmetric(vertical: 2),
-        //             child: Text(
-        //               row[0],
-        //               style: const TextStyle(fontWeight: FontWeight.bold),
-        //             ),
-        //           ),
-        //           Padding(
-        //             padding: const EdgeInsets.symmetric(vertical: 2),
-        //             child: Text(row[1]),
-        //           ),
-        //         ],
-        //       ),
-        //   ],
-        // ),
         const SizedBox(height: 16),
-        // Table 2: Lyrics
         Table(
           columnWidths: const {0: FixedColumnWidth(100), 1: FlexColumnWidth()},
           defaultVerticalAlignment: TableCellVerticalAlignment.top,

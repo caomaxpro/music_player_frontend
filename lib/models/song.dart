@@ -15,29 +15,32 @@ class Song {
   String instrumentalPath = '';
   String audioImgUri = '';
   String lyrics = '...';
-  bool isOnlineSearch = false; // New field to track online search status
-  String amplitude = ''; // New field to store amplitude data
-  String timestampLyrics = ''; // New field to store lyrics with timestamps
-
-  @Transient()
-  bool? isExpanded; // This field will not be stored in the database
+  String amplitude = '';
+  String timestampLyrics = '';
+  String storagePath = ''; // <--- Add this line
+  @Property(type: PropertyType.date)
+  DateTime createdDate = DateTime.now(); // New field
+  @Property(type: PropertyType.date)
+  DateTime recentDate = DateTime.now(); // Added field
 
   Song({
     this.id = 0,
-    this.uuid = "", // UUID is now required
-    required this.title,
-    required this.artist,
-    required this.duration,
-    required this.filePath,
-    required this.audioImgUri,
-    required this.lyrics,
-    this.isOnlineSearch = false, // Default value is false
-    this.amplitude = '', // Default value is empty
-    this.timestampLyrics = '', // Default value is empty
+    this.uuid = "",
+    this.title = "",
+    this.artist = "",
+    this.duration = 0,
+    this.filePath = "",
+    this.audioImgUri = "",
+    this.lyrics = "",
+    this.amplitude = '',
+    this.timestampLyrics = '',
     this.vocalPath = '',
     this.instrumentalPath = '',
-    this.isExpanded, // Optional parameter for temporary state
-  });
+    this.storagePath = '', // <--- Add this line
+    DateTime? createdDate,
+    DateTime? recentDate,
+  }) : createdDate = createdDate ?? DateTime.now(),
+       recentDate = recentDate ?? DateTime.now();
 
   factory Song.withCustomId({
     required String title,
@@ -46,29 +49,31 @@ class Song {
     required String filePath,
     required String audioImgUri,
     required String lyrics,
-    bool isOnlineSearch = false, // Default value for online search
-    String amplitude = '', // Default value for amplitude
-    String timestampLyrics = '', // Default value for timestamped lyrics
+    String amplitude = '',
+    String timestampLyrics = '',
     String vocalPath = '',
     String instrumentalPath = '',
-    bool? isExpanded,
+    String storagePath = '',
+    DateTime? createdDate,
+    DateTime? recentDate,
   }) {
-    final uuid = const Uuid().v4(); // Generate a UUID
+    final uuid = const Uuid().v4();
     return Song(
-      id: 0, // Default ID is 0 for ObjectBox
-      uuid: uuid, // Assign the generated UUID
+      id: 0,
+      uuid: uuid,
       title: title,
       artist: artist,
       duration: duration,
       filePath: filePath,
       audioImgUri: audioImgUri,
       lyrics: lyrics,
-      isOnlineSearch: isOnlineSearch,
       amplitude: amplitude,
       timestampLyrics: timestampLyrics,
       vocalPath: vocalPath,
       instrumentalPath: instrumentalPath,
-      isExpanded: isExpanded,
+      storagePath: storagePath,
+      createdDate: createdDate ?? DateTime.now(),
+      recentDate: recentDate ?? DateTime.now(),
     );
   }
 
@@ -80,33 +85,80 @@ class Song {
       'title': title,
       'artist': artist,
       'duration': duration,
-      'filePath': filePath, // Changed to camelCase
-      'audioImgUri': audioImgUri, // Changed to camelCase
+      'filePath': filePath,
+      'audioImgUri': audioImgUri,
       'lyrics': lyrics,
-      'amplitude': amplitude, // Added amplitude field
-      'timestampLyrics': timestampLyrics, // Added timestampLyrics field
+      'amplitude': amplitude,
+      'timestampLyrics': timestampLyrics,
       'vocalPath': vocalPath,
       'instrumentalPath': instrumentalPath,
-      'isOnlineSearch': isOnlineSearch, // Changed to camelCase
-      // 'isExpanded' is intentionally excluded from the Map
+      'storagePath': storagePath,
+      'createdDate': createdDate.toIso8601String(),
+      'recentDate': recentDate.toIso8601String(),
     };
   }
 
   // Factory constructor to create a Song from a Map
   factory Song.fromMap(Map<String, dynamic> map) {
     return Song(
-      id: map['id'] ?? 0, // Default to 0 if ID is not provided
-      uuid: map['uuid'] ?? const Uuid().v4(), // Generate a UUID if not provided
+      id: map['id'] ?? 0,
+      uuid: map['uuid'] ?? const Uuid().v4(),
       title: map['title'] ?? 'Unknown Title',
       artist: map['artist'] ?? 'Unknown Artist',
       duration: map['duration'] ?? 0,
-      filePath: map['filePath'] ?? '', // Changed to camelCase
-      audioImgUri: map['audioImgUri'] ?? '', // Changed to camelCase
+      filePath: map['filePath'] ?? '',
+      audioImgUri: map['audioImgUri'] ?? '',
       lyrics: map['lyrics'] ?? '',
-      amplitude: map['amplitude'] ?? '', // Added amplitude field
-      timestampLyrics:
-          map['timestampLyrics'] ?? '', // Added timestampLyrics field
-      isOnlineSearch: map['isOnlineSearch'] ?? false, // Changed to camelCase
+      amplitude: map['amplitude'] ?? '',
+      timestampLyrics: map['timestampLyrics'] ?? '',
+      vocalPath: map['vocalPath'] ?? '',
+      instrumentalPath: map['instrumentalPath'] ?? '',
+      storagePath: map['storagePath'] ?? '',
+      createdDate:
+          map['createdDate'] != null
+              ? DateTime.parse(map['createdDate'])
+              : DateTime.now(),
+      recentDate:
+          map['recentDate'] != null
+              ? DateTime.parse(map['recentDate'])
+              : DateTime.now(),
+    );
+  }
+
+  // In your Song class
+  Song copyWith({
+    int? id,
+    String? uuid,
+    String? title,
+    String? artist,
+    int? duration,
+    String? filePath,
+    String? vocalPath,
+    String? instrumentalPath,
+    String? audioImgUri,
+    String? lyrics,
+    String? amplitude,
+    String? timestampLyrics,
+    String? storagePath,
+    DateTime? createdDate,
+    DateTime? recentDate,
+  }) {
+    return Song(
+      id: id ?? this.id,
+      uuid: uuid ?? this.uuid,
+      title: title ?? this.title,
+      artist: artist ?? this.artist,
+      duration: duration ?? this.duration,
+      filePath: filePath ?? this.filePath,
+      vocalPath: vocalPath ?? this.vocalPath,
+      instrumentalPath: instrumentalPath ?? this.instrumentalPath,
+      audioImgUri: audioImgUri ?? this.audioImgUri,
+      lyrics: lyrics ?? this.lyrics,
+      amplitude: amplitude ?? this.amplitude,
+      timestampLyrics: timestampLyrics ?? this.timestampLyrics,
+      storagePath: storagePath ?? this.storagePath,
+      createdDate: createdDate ?? this.createdDate,
+      recentDate: recentDate ?? this.recentDate,
     );
   }
 }

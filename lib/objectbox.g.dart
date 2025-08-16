@@ -14,138 +14,103 @@ import 'package:objectbox/internal.dart'
 import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
-import 'models/playlist.dart';
 import 'models/song.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
 final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
-    id: const obx_int.IdUid(1, 2391695569417533994),
+    id: const obx_int.IdUid(1, 8821277811218544115),
     name: 'Song',
-    lastPropertyId: const obx_int.IdUid(16, 5281286302973097412),
+    lastPropertyId: const obx_int.IdUid(14, 7313911926261287548),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(1, 2282628691080034565),
+        id: const obx_int.IdUid(1, 6488944693296695625),
         name: 'id',
         type: 6,
         flags: 129,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(2, 1037189200550608842),
+        id: const obx_int.IdUid(2, 563570291174276779),
+        name: 'uuid',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 6167011765445137370),
         name: 'title',
         type: 9,
         flags: 0,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(3, 6249714530244300952),
+        id: const obx_int.IdUid(4, 6883516046890042815),
         name: 'artist',
         type: 9,
         flags: 0,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(4, 9007100993019695209),
+        id: const obx_int.IdUid(5, 5626970840388193135),
         name: 'duration',
         type: 6,
         flags: 0,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(5, 1289837527955793159),
+        id: const obx_int.IdUid(6, 6950630416761939253),
         name: 'filePath',
         type: 9,
         flags: 0,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(6, 3525172633175401922),
-        name: 'audioImgUri',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(8, 5337996225307204971),
-        name: 'lyrics',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(10, 2747283427792566903),
-        name: 'uuid',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(11, 4932846698851974252),
-        name: 'isOnlineSearch',
-        type: 1,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(12, 3166170638286190911),
-        name: 'amplitude',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(13, 3835736624456525778),
-        name: 'timestampLyrics',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(15, 4359083438157976561),
+        id: const obx_int.IdUid(7, 5477606557243311434),
         name: 'vocalPath',
         type: 9,
         flags: 0,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(16, 5281286302973097412),
+        id: const obx_int.IdUid(8, 4252804410467501000),
         name: 'instrumentalPath',
         type: 9,
         flags: 0,
       ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(9, 5411544786149217022),
+        name: 'audioImgUri',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(10, 2231009584145218245),
+        name: 'lyrics',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(11, 6988265277597161522),
+        name: 'amplitude',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(12, 732563055709382247),
+        name: 'timestampLyrics',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(13, 909824457456036851),
+        name: 'createdDate',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(14, 7313911926261287548),
+        name: 'recentDate',
+        type: 10,
+        flags: 0,
+      ),
     ],
     relations: <obx_int.ModelRelation>[],
-    backlinks: <obx_int.ModelBacklink>[],
-  ),
-  obx_int.ModelEntity(
-    id: const obx_int.IdUid(2, 574910457787558532),
-    name: 'Playlist',
-    lastPropertyId: const obx_int.IdUid(4, 4258339789670784521),
-    flags: 0,
-    properties: <obx_int.ModelProperty>[
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(1, 8715050878172679852),
-        name: 'id',
-        type: 6,
-        flags: 129,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(2, 5382294283011522263),
-        name: 'name',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(3, 6626809982927991766),
-        name: 'description',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(4, 4258339789670784521),
-        name: 'uuid',
-        type: 9,
-        flags: 0,
-      ),
-    ],
-    relations: <obx_int.ModelRelation>[
-      obx_int.ModelRelation(
-        id: const obx_int.IdUid(1, 1975785208170448372),
-        name: 'songs',
-        targetId: const obx_int.IdUid(1, 2391695569417533994),
-      ),
-    ],
     backlinks: <obx_int.ModelBacklink>[],
   ),
 ];
@@ -188,17 +153,13 @@ Future<obx.Store> openStore({
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
     entities: _entities,
-    lastEntityId: const obx_int.IdUid(2, 574910457787558532),
+    lastEntityId: const obx_int.IdUid(1, 8821277811218544115),
     lastIndexId: const obx_int.IdUid(0, 0),
-    lastRelationId: const obx_int.IdUid(1, 1975785208170448372),
+    lastRelationId: const obx_int.IdUid(0, 0),
     lastSequenceId: const obx_int.IdUid(0, 0),
     retiredEntityUids: const [],
     retiredIndexUids: const [],
-    retiredPropertyUids: const [
-      297405223260085423,
-      484050272339201901,
-      4258461524366401951,
-    ],
+    retiredPropertyUids: const [],
     retiredRelationUids: const [],
     modelVersion: 5,
     modelVersionParserMinimum: 5,
@@ -215,30 +176,31 @@ obx_int.ModelDefinition getObjectBoxModel() {
         object.id = id;
       },
       objectToFB: (Song object, fb.Builder fbb) {
+        final uuidOffset = fbb.writeString(object.uuid);
         final titleOffset = fbb.writeString(object.title);
         final artistOffset = fbb.writeString(object.artist);
         final filePathOffset = fbb.writeString(object.filePath);
-        final audioImgUriOffset = fbb.writeString(object.audioImgUri);
-        final lyricsOffset = fbb.writeString(object.lyrics);
-        final uuidOffset = fbb.writeString(object.uuid);
-        final amplitudeOffset = fbb.writeString(object.amplitude);
-        final timestampLyricsOffset = fbb.writeString(object.timestampLyrics);
         final vocalPathOffset = fbb.writeString(object.vocalPath);
         final instrumentalPathOffset = fbb.writeString(object.instrumentalPath);
-        fbb.startTable(17);
+        final audioImgUriOffset = fbb.writeString(object.audioImgUri);
+        final lyricsOffset = fbb.writeString(object.lyrics);
+        final amplitudeOffset = fbb.writeString(object.amplitude);
+        final timestampLyricsOffset = fbb.writeString(object.timestampLyrics);
+        fbb.startTable(15);
         fbb.addInt64(0, object.id);
-        fbb.addOffset(1, titleOffset);
-        fbb.addOffset(2, artistOffset);
-        fbb.addInt64(3, object.duration);
-        fbb.addOffset(4, filePathOffset);
-        fbb.addOffset(5, audioImgUriOffset);
-        fbb.addOffset(7, lyricsOffset);
-        fbb.addOffset(9, uuidOffset);
-        fbb.addBool(10, object.isOnlineSearch);
-        fbb.addOffset(11, amplitudeOffset);
-        fbb.addOffset(12, timestampLyricsOffset);
-        fbb.addOffset(14, vocalPathOffset);
-        fbb.addOffset(15, instrumentalPathOffset);
+        fbb.addOffset(1, uuidOffset);
+        fbb.addOffset(2, titleOffset);
+        fbb.addOffset(3, artistOffset);
+        fbb.addInt64(4, object.duration);
+        fbb.addOffset(5, filePathOffset);
+        fbb.addOffset(6, vocalPathOffset);
+        fbb.addOffset(7, instrumentalPathOffset);
+        fbb.addOffset(8, audioImgUriOffset);
+        fbb.addOffset(9, lyricsOffset);
+        fbb.addOffset(10, amplitudeOffset);
+        fbb.addOffset(11, timestampLyricsOffset);
+        fbb.addInt64(12, object.createdDate.millisecondsSinceEpoch);
+        fbb.addInt64(13, object.recentDate.millisecondsSinceEpoch);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -253,46 +215,46 @@ obx_int.ModelDefinition getObjectBoxModel() {
         );
         final uuidParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 22, '');
+        ).vTableGet(buffer, rootOffset, 6, '');
         final titleParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 6, '');
+        ).vTableGet(buffer, rootOffset, 8, '');
         final artistParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 8, '');
+        ).vTableGet(buffer, rootOffset, 10, '');
         final durationParam = const fb.Int64Reader().vTableGet(
           buffer,
           rootOffset,
-          10,
+          12,
           0,
         );
         final filePathParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 12, '');
+        ).vTableGet(buffer, rootOffset, 14, '');
         final audioImgUriParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 14, '');
+        ).vTableGet(buffer, rootOffset, 20, '');
         final lyricsParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 18, '');
-        final isOnlineSearchParam = const fb.BoolReader().vTableGet(
-          buffer,
-          rootOffset,
-          24,
-          false,
-        );
+        ).vTableGet(buffer, rootOffset, 22, '');
         final amplitudeParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 26, '');
+        ).vTableGet(buffer, rootOffset, 24, '');
         final timestampLyricsParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 28, '');
+        ).vTableGet(buffer, rootOffset, 26, '');
         final vocalPathParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 32, '');
+        ).vTableGet(buffer, rootOffset, 16, '');
         final instrumentalPathParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 34, '');
+        ).vTableGet(buffer, rootOffset, 18, '');
+        final createdDateParam = DateTime.fromMillisecondsSinceEpoch(
+          const fb.Int64Reader().vTableGet(buffer, rootOffset, 28, 0),
+        );
+        final recentDateParam = DateTime.fromMillisecondsSinceEpoch(
+          const fb.Int64Reader().vTableGet(buffer, rootOffset, 30, 0),
+        );
         final object = Song(
           id: idParam,
           uuid: uuidParam,
@@ -302,69 +264,14 @@ obx_int.ModelDefinition getObjectBoxModel() {
           filePath: filePathParam,
           audioImgUri: audioImgUriParam,
           lyrics: lyricsParam,
-          isOnlineSearch: isOnlineSearchParam,
           amplitude: amplitudeParam,
           timestampLyrics: timestampLyricsParam,
           vocalPath: vocalPathParam,
           instrumentalPath: instrumentalPathParam,
+          createdDate: createdDateParam,
+          recentDate: recentDateParam,
         );
 
-        return object;
-      },
-    ),
-    Playlist: obx_int.EntityDefinition<Playlist>(
-      model: _entities[1],
-      toOneRelations: (Playlist object) => [],
-      toManyRelations: (Playlist object) => {
-        obx_int.RelInfo<Playlist>.toMany(1, object.id): object.songs,
-      },
-      getId: (Playlist object) => object.id,
-      setId: (Playlist object, int id) {
-        object.id = id;
-      },
-      objectToFB: (Playlist object, fb.Builder fbb) {
-        final nameOffset = fbb.writeString(object.name);
-        final descriptionOffset = object.description == null
-            ? null
-            : fbb.writeString(object.description!);
-        final uuidOffset = fbb.writeString(object.uuid);
-        fbb.startTable(5);
-        fbb.addInt64(0, object.id);
-        fbb.addOffset(1, nameOffset);
-        fbb.addOffset(2, descriptionOffset);
-        fbb.addOffset(3, uuidOffset);
-        fbb.finish(fbb.endTable());
-        return object.id;
-      },
-      objectFromFB: (obx.Store store, ByteData fbData) {
-        final buffer = fb.BufferContext(fbData);
-        final rootOffset = buffer.derefObject(0);
-        final nameParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 6, '');
-        final descriptionParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 8);
-        final idParam = const fb.Int64Reader().vTableGet(
-          buffer,
-          rootOffset,
-          4,
-          0,
-        );
-        final uuidParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 10, '');
-        final object = Playlist(
-          name: nameParam,
-          description: descriptionParam,
-          id: idParam,
-          uuid: uuidParam,
-        );
-        obx_int.InternalToManyAccess.setRelInfo<Playlist>(
-          object.songs,
-          store,
-          obx_int.RelInfo<Playlist>.toMany(1, object.id),
-        );
         return object;
       },
     ),
@@ -378,89 +285,66 @@ class Song_ {
   /// See [Song.id].
   static final id = obx.QueryIntegerProperty<Song>(_entities[0].properties[0]);
 
+  /// See [Song.uuid].
+  static final uuid = obx.QueryStringProperty<Song>(_entities[0].properties[1]);
+
   /// See [Song.title].
   static final title = obx.QueryStringProperty<Song>(
-    _entities[0].properties[1],
+    _entities[0].properties[2],
   );
 
   /// See [Song.artist].
   static final artist = obx.QueryStringProperty<Song>(
-    _entities[0].properties[2],
+    _entities[0].properties[3],
   );
 
   /// See [Song.duration].
   static final duration = obx.QueryIntegerProperty<Song>(
-    _entities[0].properties[3],
+    _entities[0].properties[4],
   );
 
   /// See [Song.filePath].
   static final filePath = obx.QueryStringProperty<Song>(
-    _entities[0].properties[4],
-  );
-
-  /// See [Song.audioImgUri].
-  static final audioImgUri = obx.QueryStringProperty<Song>(
     _entities[0].properties[5],
-  );
-
-  /// See [Song.lyrics].
-  static final lyrics = obx.QueryStringProperty<Song>(
-    _entities[0].properties[6],
-  );
-
-  /// See [Song.uuid].
-  static final uuid = obx.QueryStringProperty<Song>(_entities[0].properties[7]);
-
-  /// See [Song.isOnlineSearch].
-  static final isOnlineSearch = obx.QueryBooleanProperty<Song>(
-    _entities[0].properties[8],
-  );
-
-  /// See [Song.amplitude].
-  static final amplitude = obx.QueryStringProperty<Song>(
-    _entities[0].properties[9],
-  );
-
-  /// See [Song.timestampLyrics].
-  static final timestampLyrics = obx.QueryStringProperty<Song>(
-    _entities[0].properties[10],
   );
 
   /// See [Song.vocalPath].
   static final vocalPath = obx.QueryStringProperty<Song>(
-    _entities[0].properties[11],
+    _entities[0].properties[6],
   );
 
   /// See [Song.instrumentalPath].
   static final instrumentalPath = obx.QueryStringProperty<Song>(
+    _entities[0].properties[7],
+  );
+
+  /// See [Song.audioImgUri].
+  static final audioImgUri = obx.QueryStringProperty<Song>(
+    _entities[0].properties[8],
+  );
+
+  /// See [Song.lyrics].
+  static final lyrics = obx.QueryStringProperty<Song>(
+    _entities[0].properties[9],
+  );
+
+  /// See [Song.amplitude].
+  static final amplitude = obx.QueryStringProperty<Song>(
+    _entities[0].properties[10],
+  );
+
+  /// See [Song.timestampLyrics].
+  static final timestampLyrics = obx.QueryStringProperty<Song>(
+    _entities[0].properties[11],
+  );
+
+  /// See [Song.createdDate].
+  static final createdDate = obx.QueryDateProperty<Song>(
     _entities[0].properties[12],
   );
-}
 
-/// [Playlist] entity fields to define ObjectBox queries.
-class Playlist_ {
-  /// See [Playlist.id].
-  static final id = obx.QueryIntegerProperty<Playlist>(
-    _entities[1].properties[0],
-  );
-
-  /// See [Playlist.name].
-  static final name = obx.QueryStringProperty<Playlist>(
-    _entities[1].properties[1],
-  );
-
-  /// See [Playlist.description].
-  static final description = obx.QueryStringProperty<Playlist>(
-    _entities[1].properties[2],
-  );
-
-  /// See [Playlist.uuid].
-  static final uuid = obx.QueryStringProperty<Playlist>(
-    _entities[1].properties[3],
-  );
-
-  /// see [Playlist.songs]
-  static final songs = obx.QueryRelationToMany<Playlist, Song>(
-    _entities[1].relations[0],
+  /// See [Song.recentDate].
+  static final recentDate = obx.QueryDateProperty<Song>(
+    _entities[0].properties[13],
   );
 }

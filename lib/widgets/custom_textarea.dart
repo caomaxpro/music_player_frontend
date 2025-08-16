@@ -6,12 +6,16 @@ class CustomTextarea extends StatelessWidget {
   final int minLines;
   final TextEditingController? controller;
   final TextStyle? textStyle;
-  final TextStyle? hintTextStyle; // Property for hint text styling
+  final TextStyle? hintTextStyle;
   final EdgeInsetsGeometry? padding;
   final Color? backgroundColor;
-  final String? errorText; // Property for error message
-  final TextStyle? errorTextStyle; // Property for error text styling
-  final bool showError; // New flag to toggle error messages
+  final String? errorText;
+  final TextStyle? errorTextStyle;
+  final bool showError;
+  final double? borderWidth;
+  final double? borderRadius;
+  final double cursorWidth;
+  final Color? cursorColor;
 
   const CustomTextarea({
     super.key,
@@ -25,7 +29,11 @@ class CustomTextarea extends StatelessWidget {
     this.backgroundColor,
     this.errorText,
     this.errorTextStyle,
-    this.showError = false, // Default to false
+    this.showError = false,
+    this.borderWidth,
+    this.borderRadius,
+    this.cursorWidth = 2,
+    this.cursorColor = Colors.white,
   });
 
   @override
@@ -38,36 +46,41 @@ class CustomTextarea extends StatelessWidget {
           padding: padding ?? const EdgeInsets.all(5.0),
           decoration: BoxDecoration(
             color: backgroundColor ?? Colors.grey.shade200,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey.shade400),
+            borderRadius: BorderRadius.circular(borderRadius ?? 8),
+            border:
+                (borderWidth ?? 1) > 0
+                    ? Border.all(
+                      color: Colors.grey.shade400,
+                      width: borderWidth ?? 1,
+                    )
+                    : null,
           ),
           child: TextField(
             controller: controller,
             maxLines: maxLines,
             minLines: minLines,
+            cursorWidth: cursorWidth,
+            cursorColor: cursorColor,
+            cursorOpacityAnimates: true,
+            cursorHeight: 20,
             style:
                 textStyle ?? const TextStyle(fontSize: 14, color: Colors.black),
             decoration: InputDecoration(
               hintText: hintText ?? 'Enter text here...',
               hintStyle:
-                  hintTextStyle ??
-                  TextStyle(color: Colors.grey.shade500), // Apply hintTextStyle
+                  hintTextStyle ?? TextStyle(color: Colors.grey.shade500),
               border: InputBorder.none,
             ),
           ),
         ),
-        if (showError &&
-            errorText != null) // Show error only if showError is true
+        if (showError && errorText != null)
           Padding(
             padding: const EdgeInsets.only(top: 4.0),
             child: Text(
               errorText!,
               style:
                   errorTextStyle ??
-                  TextStyle(
-                    color: Colors.red,
-                    fontSize: 12,
-                  ), // Default error text style
+                  const TextStyle(color: Colors.red, fontSize: 12),
             ),
           ),
       ],

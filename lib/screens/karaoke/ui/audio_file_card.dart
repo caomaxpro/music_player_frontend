@@ -49,8 +49,8 @@ class _AudioFilePickerCardState extends ConsumerState<AudioFilePickerCard> {
               ),
               const SizedBox(height: 8),
               Text(
-                currentAudioFile['title'] != ""
-                    ? 'Selected File: ${currentAudioFile['title']}'
+                currentAudioFile.title.isNotEmpty
+                    ? 'Selected File: ${currentAudioFile.title}'
                     : 'No Audio File Selected',
                 style: TextStyle(fontSize: 14, color: Colors.grey[600]),
               ),
@@ -106,15 +106,15 @@ class _AudioFilePickerCardState extends ConsumerState<AudioFilePickerCard> {
                               itemBuilder: (context, index) {
                                 final file = audioFiles[index];
                                 return ListTile(
-                                  title: Text(file['title'] ?? 'Unknown'),
-                                  subtitle: Text(file['artist'] ?? ''),
-                                  trailing: Text('${file['duration']}s'),
+                                  title: Text(file.title ?? 'Unknown'),
+                                  subtitle: Text(file.artist),
+                                  trailing: Text('${file.duration}s'),
                                   onTap: () {
                                     ref
                                         .read(currentAudioFileProvider.notifier)
                                         .state = file;
                                     Navigator.pop(context);
-                                    widget.onFileSelected(file['filePath']);
+                                    widget.onFileSelected(file.filePath);
                                   },
                                 );
                               },
