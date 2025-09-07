@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:music_player/screens/create/audio_file/audio_device.dart';
-import 'package:music_player/screens/create/audio_file/audio_google_drive.dart';
-import 'package:music_player/screens/create/audio_file/mp3_from_youtube.dart';
+import 'package:music_player/screens/create/lyrics/audio_text_device.dart';
 import 'package:music_player/screens/create/lyrics/lyrics_manually.dart';
 import 'package:music_player/screens/storage/file_explorer_screen.dart';
+import 'package:music_player/state/create_state.dart';
 import 'package:music_player/state/setting_state.dart';
-import 'package:music_player/svg/google_drive_download.dart';
-import 'package:music_player/svg/internet_download_svg.dart';
 
 class LyricsOptionsScreen extends ConsumerWidget {
   const LyricsOptionsScreen({super.key});
@@ -36,14 +34,10 @@ class LyricsOptionsScreen extends ConsumerWidget {
               icon: Icon(Icons.folder, color: textColor),
               label: 'My Device',
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) =>
-                            AudioDeviceScreen(fileType: AudioFileType.text),
-                  ),
-                );
+                ref.read(createStateProvider.notifier).state =
+                    CreateState.lyrics;
+
+                Navigator.pushNamed(context, AudioTextDeviceScreen.routeName);
               },
             ),
             const SizedBox(height: 16),
@@ -52,12 +46,10 @@ class LyricsOptionsScreen extends ConsumerWidget {
               icon: Icon(Icons.edit_document, color: textColor, size: 26),
               label: 'Create Your Own Lyrics ',
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => LyricsManuallyScreen(),
-                  ),
-                );
+                ref.read(createStateProvider.notifier).state =
+                    CreateState.lyrics;
+
+                Navigator.pushNamed(context, LyricsManuallyScreen.routeName);
               },
             ),
             const Spacer(),

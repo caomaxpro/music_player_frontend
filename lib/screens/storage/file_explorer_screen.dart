@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:music_player/screens/storage/files_screen.dart';
 import 'package:music_player/screens/storage/text_files_screen.dart';
 import 'package:music_player/state/setting_state.dart';
-import 'package:music_player/widgets/custom_scaffold.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'dart:io';
 

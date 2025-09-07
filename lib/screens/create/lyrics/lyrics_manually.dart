@@ -7,15 +7,13 @@ import 'package:music_player/screens/create/lyrics/ui/input_instruction.dart';
 import 'package:music_player/screens/create/lyrics/ui/lyrics_preview_table.dart';
 import 'package:music_player/screens/create/lyrics/ui/lyrics_textarea_card.dart';
 import 'package:music_player/screens/create/set_karaoke_button.dart';
-import 'package:music_player/screens/karaoke_player/helper/karaoke_player_helper.dart';
 import 'package:music_player/state/audio_state.dart';
+import 'package:music_player/state/create_state.dart';
 import 'package:music_player/state/setting_state.dart';
 import 'package:music_player/svg/lyrics_file_svg.dart';
 import 'package:music_player/screens/create/lyrics/utils/convert_lrc_to_json.dart';
 import 'package:music_player/widgets/custom_button_icon.dart';
 import 'package:music_player/widgets/custom_message_card.dart';
-import 'package:music_player/widgets/custom_textarea.dart';
-import 'package:music_player/widgets/error_msg_card.dart';
 
 // Giả sử bạn đã có các provider cho lyrics, previewLines, onCreateTrack
 final lyricsProvider = Provider<String>((ref) => '');
@@ -23,6 +21,8 @@ final previewLinesProvider = Provider<List<Map<String, String>>>((ref) => []);
 final onCreateTrackProvider = Provider<VoidCallback?>((ref) => null);
 
 class LyricsManuallyScreen extends ConsumerStatefulWidget {
+  static const String routeName = "lyricManual";
+
   const LyricsManuallyScreen({super.key});
 
   @override
@@ -32,7 +32,6 @@ class LyricsManuallyScreen extends ConsumerStatefulWidget {
 
 class _LyricsManuallyScreenState extends ConsumerState<LyricsManuallyScreen> {
   late TextEditingController _lyricsController;
-  List<List<String>> parsedLyrics = [];
   bool showInstruction = false;
   bool showLyricsPreview = false;
   bool showErrMsg = false;
@@ -42,10 +41,26 @@ class _LyricsManuallyScreenState extends ConsumerState<LyricsManuallyScreen> {
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(createStateProvider.notifier).state = CreateState.lyrics;
+    });
+
     _lyricsController = TextEditingController();
     _lyricsController.addListener(() {
       setState(() {});
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Check if the screen is being revisited
+    if (ModalRoute.of(context)?.isCurrent == true) {
+      // Run your desired function here
+      ref.read(createStateProvider.notifier).state = CreateState.lyrics;
+    }
   }
 
   @override
@@ -69,7 +84,6 @@ class _LyricsManuallyScreenState extends ConsumerState<LyricsManuallyScreen> {
         showErrMsg = true;
       });
     } else {
-      final lyrics = splitLrcMetaAndLyrics(lrcLyrics)["lyrics"];
       setState(() {
         onLoading = true; // trigger loading animation
       });
@@ -79,12 +93,10 @@ class _LyricsManuallyScreenState extends ConsumerState<LyricsManuallyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final lyrics = ref.watch(lyricsProvider);
-    final previewLines = ref.watch(previewLinesProvider);
-    final onCreateTrack = ref.watch(onCreateTrackProvider);
     final thumbColor = ref.read(thumbColorProvider);
     final textColor = ref.read(textColorProvider);
     final cardColor = ref.read(cardColorProvider);
+    final currentAudioFile = ref.watch(currentAudioFileProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFF232226),
@@ -165,12 +177,15 @@ class _LyricsManuallyScreenState extends ConsumerState<LyricsManuallyScreen> {
                   onLoadingDone: () {
                     setState(() {
                       onLoading = false;
-                      final lyrics =
-                          splitLrcMetaAndLyrics(
-                            _lyricsController.text,
-                          )["lyrics"];
-                      parsedLyrics = parseLrcLyrics(lyrics!);
+
                       showLyricsPreview = true;
+
+                      // set audio state
+                      Song updatedAudioFile = ref
+                          .read(currentAudioFileProvider)
+                          .copyWith(timestampLyrics: _lyricsController.text);
+                      ref.read(currentAudioFileProvider.notifier).state =
+                          updatedAudioFile;
                     });
                   },
                 ),
@@ -211,22 +226,15 @@ class _LyricsManuallyScreenState extends ConsumerState<LyricsManuallyScreen> {
                       });
                     },
                   ),
-
-                  // IconButton(
-                  //   icon: Icon(Icons.edit, color: textColor, size: 24),
-                  //   onPressed: () {
-                  //     setState(() {
-                  //       showLyricsPreview = false;
-                  //     });
-                  //   },
-                  // ),
                 ],
               ),
+
+              SizedBox(height: 16),
 
               // const SizedBox(height: 16),
               Expanded(
                 child: LyricsPreviewTable(
-                  parsedLyrics: parsedLyrics,
+                  lyrics: currentAudioFile.timestampLyrics,
                   textColor: textColor,
                 ),
               ),
@@ -237,11 +245,7 @@ class _LyricsManuallyScreenState extends ConsumerState<LyricsManuallyScreen> {
               // final List<dynamic> decoded = jsonDecode(jsonString);
               // final List<Map<String, dynamic>> lyricsList =
               //     decoded.map((e) => Map<String, dynamic>.from(e)).toList();
-              SetKaraokeButton(
-                onPressed: () {
-                  setLyricsState(_lyricsController.text, ref);
-                },
-              ),
+              SetKaraokeButton(),
             ],
           ],
         ),

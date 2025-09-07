@@ -33,6 +33,7 @@ class CustomScaffold extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+      resizeToAvoidBottomInset: true,
       backgroundColor: backgroundColor,
       body: body,
       floatingActionButton: floatingActionButton,

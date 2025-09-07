@@ -60,7 +60,7 @@ class DataProcessing {
             filePath: song.data,
             vocalPath: "",
             instrumentalPath: "",
-            audioImgUri: "", // Can be updated later
+            imagePath: "", // Can be updated later
             lyrics: "", // Can be updated later
             amplitude: "",
             timestampLyrics: "",

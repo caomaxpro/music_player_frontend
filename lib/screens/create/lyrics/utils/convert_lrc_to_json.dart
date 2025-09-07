@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:music_player/models/song.dart';
 import 'package:music_player/screens/karaoke_player/helper/karaoke_player_helper.dart';
+import 'package:music_player/screens/karaoke_player/helper/response_handler.dart';
 import 'package:music_player/state/audio_state.dart';
+import 'package:music_player/state/create_state.dart';
 import 'package:path_provider/path_provider.dart';
 
 // clean lrc data and convert file to .json
@@ -34,11 +36,25 @@ void setLyricsState(String lyrics, WidgetRef ref) {
   //   "[Lyrics Manually] ${jsonConvertedLyrics.toString()}",
   // );
 
+  final adjustTimestamp = ref.read(adjustTimestampProvider);
+
   Song updatedFile = ref
       .read(currentAudioFileProvider)
       .copyWith(timestampLyrics: jsonEncode(jsonConvertedLyrics));
 
   ref.read(currentAudioFileProvider.notifier).state = updatedFile;
+
+  // set create state
+  ref.read(createStateProvider.notifier).state = CreateState.complete;
+
+  // send request to backend
+
+  KaraokeService karaokeService = KaraokeService();
+
+  karaokeService.processKaraoke(
+    trackUuid: updatedFile.uuid,
+    audioFile: File(updatedFile.filePath),
+  );
 
   debugPrint("[Lyrics Manually]: Updated File ${updatedFile.toMap()}");
 }
@@ -122,8 +138,9 @@ List<List<String>> parseLrcLyrics(String lyricsRaw) {
     if (matchLrc != null) {
       final min = int.parse(matchLrc.group(1)!);
       final sec = int.parse(matchLrc.group(2)!);
+      final ms = int.parse(matchLrc.group(3)!);
       final timestamp =
-          '${min.toString().padLeft(2, '0')}:${sec.toString().padLeft(2, '0')}';
+          '${min.toString().padLeft(2, '0')}:${sec.toString().padLeft(2, '0')}.${ms.toString().padLeft(2, '0')}';
       final lyric = matchLrc.group(4)!.trim();
       result.add([timestamp, lyric]);
       continue;

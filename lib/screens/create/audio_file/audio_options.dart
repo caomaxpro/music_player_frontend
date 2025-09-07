@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:music_player/screens/create/audio_file/audio_device.dart';
-import 'package:music_player/screens/create/audio_file/audio_google_drive.dart';
-import 'package:music_player/screens/create/audio_file/mp3_from_youtube.dart';
+import 'package:music_player/screens/create/audio_file/audio_media_device.dart';
 import 'package:music_player/screens/storage/file_explorer_screen.dart';
+import 'package:music_player/state/create_state.dart';
 import 'package:music_player/state/setting_state.dart';
-import 'package:music_player/svg/google_drive_download.dart';
-import 'package:music_player/svg/internet_download_svg.dart';
 
 class AudioOptionsScreen extends ConsumerWidget {
   const AudioOptionsScreen({super.key});
@@ -35,14 +33,10 @@ class AudioOptionsScreen extends ConsumerWidget {
               icon: Icon(Icons.folder, color: textColor),
               label: 'My Device',
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) =>
-                            AudioDeviceScreen(fileType: AudioFileType.media),
-                  ),
-                );
+                ref.read(createStateProvider.notifier).state =
+                    CreateState.audioFile;
+
+                Navigator.pushNamed(context, AudioMediaDeviceScreen.routeName);
               },
             ),
             const SizedBox(height: 16),

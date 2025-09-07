@@ -1,14 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:music_player/screens/create/lyrics/utils/convert_lrc_to_json.dart';
 
-class LyricsPreviewTable extends StatelessWidget {
-  final List<List<String>> parsedLyrics;
+class LyricsPreviewTable extends StatefulWidget {
+  final String lyrics;
   final Color textColor;
 
   const LyricsPreviewTable({
     super.key,
-    required this.parsedLyrics,
+    required this.lyrics,
     required this.textColor,
   });
+
+  @override
+  State<LyricsPreviewTable> createState() => _LyricsPreviewTableState();
+}
+
+class _LyricsPreviewTableState extends State<LyricsPreviewTable> {
+  late List<List<String>> parsedLyrics;
+
+  @override
+  void initState() {
+    super.initState();
+    // Parse the lyrics into a list of timestamp and lyric pairs
+    parsedLyrics = parseLrcLyrics(
+      splitLrcMetaAndLyrics(widget.lyrics)["lyrics"]!,
+    );
+
+    debugPrint("[Audio Lyrics] $parsedLyrics");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +44,9 @@ class LyricsPreviewTable extends StatelessWidget {
                   child: Text(
                     'Timestamp',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: textColor,
+                      color: widget.textColor,
                     ),
                   ),
                 ),
@@ -37,9 +56,9 @@ class LyricsPreviewTable extends StatelessWidget {
                     child: Text(
                       'Lyric',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: textColor,
+                        color: widget.textColor,
                       ),
                     ),
                   ),
@@ -50,7 +69,6 @@ class LyricsPreviewTable extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Flexible(
-          // Đổi từ Expanded sang Flexible
           child: Scrollbar(
             thumbVisibility: false,
             child: SingleChildScrollView(
@@ -77,7 +95,7 @@ class LyricsPreviewTable extends StatelessWidget {
                             style: TextStyle(
                               color:
                                   parsedLyrics[i][0].isNotEmpty
-                                      ? textColor
+                                      ? widget.textColor
                                       : Colors.transparent,
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
@@ -92,7 +110,10 @@ class LyricsPreviewTable extends StatelessWidget {
                           ),
                           child: Text(
                             parsedLyrics[i][1],
-                            style: TextStyle(color: textColor, fontSize: 16),
+                            style: TextStyle(
+                              color: widget.textColor,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ],

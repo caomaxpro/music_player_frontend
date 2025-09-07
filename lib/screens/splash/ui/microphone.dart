@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:music_player/screens/create/infor/infor_screen.dart';
+import 'package:music_player/screens/library/library_screen.dart';
 
 class AnimatedSvgRect extends StatefulWidget {
   const AnimatedSvgRect({super.key});
@@ -29,9 +30,7 @@ class _AnimatedSvgRectState extends State<AnimatedSvgRect>
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        Navigator.of(
-          context,
-        ).pushReplacement(MaterialPageRoute(builder: (_) => InforScreen()));
+        Navigator.of(context).pushReplacementNamed(LibraryScreen.routeName);
       }
     });
   }

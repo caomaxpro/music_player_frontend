@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:music_player/screens/create/audio_file/audio_google_drive.dart';
-import 'package:music_player/screens/create/set_karaoke_button.dart';
 import 'package:music_player/svg/audio_file_svg.dart';
-import 'package:music_player/svg/guitar_svg.dart';
-import 'package:music_player/svg/lyrics_file_svg.dart';
-import 'package:music_player/screens/create/lyrics/utils/convert_lrc_to_json.dart';
 import 'package:music_player/widgets/custom_button_icon.dart';
 
 bool isYoutubeUrlValid(String url) {

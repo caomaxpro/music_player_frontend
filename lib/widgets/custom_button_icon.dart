@@ -5,25 +5,37 @@ class CustomIconButton extends StatelessWidget {
   final Widget? icon; // Cho phép icon là null
   final VoidCallback? onPressed;
   final Color? labelColor;
+  final double? labelFontSize; // Add this line for label font size
   final double? width;
   final double? height;
   final double? horizontalPadding;
   final double? verticalPadding;
+  final double? leftPadding;
+  final double? rightPadding;
+  final double? topPadding;
+  final double? bottomPadding;
   final double? borderRadius;
   final double? borderWidth;
   final bool textFirst;
   final Color? backgroundColor;
   final Color? borderColor; // <-- add this line
+  final EdgeInsetsGeometry? padding; // Thêm dòng này
 
   const CustomIconButton({
     this.label,
-    this.icon, // Cho phép null
+    this.icon,
     this.onPressed,
     this.labelColor,
+    this.labelFontSize, // Add this line for label font size
     this.width,
     this.height,
     this.horizontalPadding,
     this.verticalPadding,
+    this.leftPadding,
+    this.rightPadding,
+    this.topPadding,
+    this.bottomPadding,
+    this.padding, // Thêm dòng này
     this.borderRadius,
     this.borderWidth,
     this.textFirst = false,
@@ -35,10 +47,15 @@ class CustomIconButton extends StatelessWidget {
   // Thay đổi cách đặt background để không bị tràn ra ngoài border
   @override
   Widget build(BuildContext context) {
-    final EdgeInsetsGeometry buttonPadding = EdgeInsets.symmetric(
-      horizontal: horizontalPadding ?? 0,
-      vertical: verticalPadding ?? 0,
-    );
+    // Ưu tiên padding tổng nếu truyền vào, nếu không thì dùng các padding riêng lẻ
+    final EdgeInsetsGeometry buttonPadding =
+        padding ??
+        EdgeInsets.only(
+          left: leftPadding ?? horizontalPadding ?? 0,
+          right: rightPadding ?? horizontalPadding ?? 0,
+          top: topPadding ?? verticalPadding ?? 0,
+          bottom: bottomPadding ?? verticalPadding ?? 0,
+        );
 
     final double effectiveBorderRadius = borderRadius ?? 10;
     final double effectiveBorderWidth = borderWidth ?? 1.0;
@@ -76,7 +93,10 @@ class CustomIconButton extends StatelessWidget {
         onPressed: onPressed,
         child: Text(
           label!,
-          style: TextStyle(color: labelColor ?? Colors.white),
+          style: TextStyle(
+            color: labelColor ?? Colors.white,
+            fontSize: labelFontSize ?? 14, // Use labelFontSize here
+          ),
         ),
       );
     } else if (textFirst) {
@@ -86,7 +106,13 @@ class CustomIconButton extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(label!, style: TextStyle(color: labelColor ?? Colors.white)),
+            Text(
+              label!,
+              style: TextStyle(
+                color: labelColor ?? Colors.white,
+                fontSize: labelFontSize ?? 14, // Use labelFontSize here
+              ),
+            ),
             const SizedBox(width: 6),
             icon!,
           ],
@@ -99,7 +125,10 @@ class CustomIconButton extends StatelessWidget {
         icon: icon!,
         label: Text(
           label!,
-          style: TextStyle(color: labelColor ?? Colors.white),
+          style: TextStyle(
+            color: labelColor ?? Colors.white,
+            fontSize: labelFontSize ?? 14, // Use labelFontSize here
+          ),
         ),
       );
     }

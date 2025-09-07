@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +7,8 @@ class ApiService {
   ApiService()
     : _dio = Dio(
         BaseOptions(
-          baseUrl: "http://192.168.12.101:5000/",
+          // http://192.168.12.103:5000
+          baseUrl: "http://192.168.12.103:5000/",
           connectTimeout: Duration(
             milliseconds: 5000,
           ), // Timeout for connection (in milliseconds)
@@ -47,9 +47,9 @@ class ApiService {
     }
   }
 
-  Future<dynamic> post(String endpoint, dynamic data) async {
+  Future<dynamic> post(String endpoint, {required FormData formData}) async {
     try {
-      final response = await _dio.post(endpoint, data: data);
+      final response = await _dio.post(endpoint, data: formData);
       return response.data;
     } catch (e) {
       throw Exception('Failed to perform POST request: $e');

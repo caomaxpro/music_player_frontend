@@ -4,94 +4,158 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:8821277811218544115",
-      "lastPropertyId": "14:7313911926261287548",
+      "id": "1:5969070515578768651",
+      "lastPropertyId": "15:4096660109682434021",
       "name": "Song",
       "properties": [
         {
-          "id": "1:6488944693296695625",
+          "id": "1:7777712554290028812",
           "name": "id",
           "type": 6,
           "flags": 129
         },
         {
-          "id": "2:563570291174276779",
+          "id": "2:7382963189063421679",
           "name": "uuid",
           "type": 9
         },
         {
-          "id": "3:6167011765445137370",
+          "id": "3:5160238900587132615",
           "name": "title",
           "type": 9
         },
         {
-          "id": "4:6883516046890042815",
+          "id": "4:281789604092416390",
           "name": "artist",
           "type": 9
         },
         {
-          "id": "5:5626970840388193135",
+          "id": "5:5320435368832947210",
           "name": "duration",
           "type": 6
         },
         {
-          "id": "6:6950630416761939253",
+          "id": "6:325425649095234913",
           "name": "filePath",
           "type": 9
         },
         {
-          "id": "7:5477606557243311434",
+          "id": "7:3775760290885119452",
           "name": "vocalPath",
           "type": 9
         },
         {
-          "id": "8:4252804410467501000",
+          "id": "8:8097596465907649802",
           "name": "instrumentalPath",
           "type": 9
         },
         {
-          "id": "9:5411544786149217022",
-          "name": "audioImgUri",
+          "id": "9:9171824363583071595",
+          "name": "imagePath",
           "type": 9
         },
         {
-          "id": "10:2231009584145218245",
+          "id": "10:3106750912937181462",
           "name": "lyrics",
           "type": 9
         },
         {
-          "id": "11:6988265277597161522",
+          "id": "11:2118681879876864983",
           "name": "amplitude",
           "type": 9
         },
         {
-          "id": "12:732563055709382247",
+          "id": "12:6742437294136687482",
           "name": "timestampLyrics",
           "type": 9
         },
         {
-          "id": "13:909824457456036851",
+          "id": "13:7623219558415690993",
+          "name": "storagePath",
+          "type": 9
+        },
+        {
+          "id": "14:4160443898181292771",
           "name": "createdDate",
           "type": 10
         },
         {
-          "id": "14:7313911926261287548",
+          "id": "15:4096660109682434021",
           "name": "recentDate",
           "type": 10
         }
       ],
       "relations": []
+    },
+    {
+      "id": "2:8825714124383623825",
+      "lastPropertyId": "9:5294576346794238653",
+      "name": "Recording",
+      "properties": [
+        {
+          "id": "1:4516320311044506146",
+          "name": "id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:1971440584359084555",
+          "name": "path",
+          "type": 9
+        },
+        {
+          "id": "3:8044186050612755017",
+          "name": "start",
+          "type": 6
+        },
+        {
+          "id": "4:2501550870464946231",
+          "name": "end",
+          "type": 6
+        },
+        {
+          "id": "5:817902347467312485",
+          "name": "songId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "1:1173800041027082414",
+          "relationTarget": "Song"
+        },
+        {
+          "id": "6:3675262838112871038",
+          "name": "clipedPath",
+          "type": 9
+        },
+        {
+          "id": "7:4176819854345783129",
+          "name": "title",
+          "type": 9
+        },
+        {
+          "id": "8:4752185688355954915",
+          "name": "createdDate",
+          "type": 10
+        },
+        {
+          "id": "9:5294576346794238653",
+          "name": "durationMs",
+          "type": 6
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "1:8821277811218544115",
-  "lastIndexId": "0:0",
-  "lastRelationId": "0:0",
+  "lastEntityId": "2:8825714124383623825",
+  "lastIndexId": "1:1173800041027082414",
+  "lastRelationId": "1:8442640223663294379",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
   "retiredPropertyUids": [],
-  "retiredRelationUids": [],
+  "retiredRelationUids": [
+    8442640223663294379
+  ],
   "version": 1
 }

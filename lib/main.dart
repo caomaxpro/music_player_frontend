@@ -3,25 +3,24 @@ import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:music_player/screens/create/audio_file/audio_device.dart';
-import 'package:music_player/screens/create/audio_file/audio_options.dart';
+import 'package:music_player/screens/create/audio_file/audio_media_device.dart';
 import 'package:music_player/screens/create/infor/infor_screen.dart';
-import 'package:music_player/screens/create/audio_file/mp3_from_youtube.dart';
+import 'package:music_player/screens/create/lyrics/audio_text_device.dart';
 import 'package:music_player/screens/create/lyrics/lyrics_manually.dart';
-import 'package:music_player/screens/create/lyrics/lyrics_options.dart';
-import 'package:music_player/screens/db/db_manager.dart';
-import 'package:music_player/screens/storage/file_explorer_screen.dart';
 import 'package:music_player/screens/karaoke_player/karaoke_player_screen.dart';
+import 'package:music_player/screens/karaoke_track/karaoke_track_screen.dart';
 import 'package:music_player/screens/library/library_screen.dart';
 import 'package:music_player/screens/splash/splash_screen.dart';
+import 'package:music_player/screens/storage/file_explorer_screen.dart';
 import 'package:music_player/services/audio_handler.dart';
-import 'package:music_player/utils/response_handler.dart';
+import 'package:music_player/screens/karaoke_player/helper/response_handler.dart';
+import 'package:music_player/widgets/custom_karaoke_loading.dart';
 import 'package:path_provider/path_provider.dart';
-import 'screens/music_list/music_list_screen.dart';
-import 'objectbox.g.dart';
 import 'objectbox.dart';
 import 'state/audio_state.dart';
 
@@ -55,7 +54,30 @@ Future<void> initializeObjectBox() async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await initializeAppStorage();
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    if (kDebugMode) {
+      print(details.exceptionAsString());
+      print(details.stack);
+    }
+  };
+
+  ErrorWidget.builder = (FlutterErrorDetails details) {
+    return Material(
+      color: Colors.white,
+      child: Center(
+        child: Text(
+          'Flutter Error:\n${details.exceptionAsString()}',
+          style: TextStyle(color: Colors.red, fontSize: 16),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  };
+
+  KaraokeService karaokeService = KaraokeService();
+
+  await karaokeService.initializeAppStorage();
 
   audioHandler =
       await initAudioService(); // Ensure this completes before running the app
@@ -68,6 +90,20 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // SplashScreen()
+  // LyricsManuallyScreen()
+  // Mp3FromYoutubeScreen()
+  // AudioDeviceScreen()
+  /*    
+      AudioDeviceScreen(
+        fileType: AudioFileType.text,
+      ) 
+      */
+  // InforScreen()
+  // LyricsOptionsScreen()
+  // LibraryScreen()
+  // AudioMediaDeviceScreen()
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -77,6 +113,19 @@ class MyApp extends StatelessWidget {
       ),
       home: const MainTabScreen(),
       debugShowCheckedModeBanner: false,
+      routes: {
+        LibraryScreen.routeName: (context) => LibraryScreen(),
+        InforScreen.routeName: (context) => const InforScreen(),
+        AudioMediaDeviceScreen.routeName:
+            (context) => const AudioMediaDeviceScreen(),
+        AudioTextDeviceScreen.routeName:
+            (context) => const AudioTextDeviceScreen(),
+        KaraokePlayerScreen.routeName: (context) => const KaraokePlayerScreen(),
+        LyricsManuallyScreen.routeName:
+            (context) => const LyricsManuallyScreen(),
+        KaraokeTrackScreen.routeName:
+            (context) => const KaraokeTrackScreen(folderPath: ''),
+      },
     );
   }
 }
@@ -182,24 +231,9 @@ class _MainTabScreenState extends ConsumerState<MainTabScreen> {
       ),
     );
 
-    // SplashScreen()
-    // LyricsManuallyScreen()
-    // Mp3FromYoutubeScreen()
-    // AudioDeviceScreen()
-    /*    
-      AudioDeviceScreen(
-        fileType: AudioFileType.text,
-      ) 
-      */
-    // InforScreen()
-    // LyricsOptionsScreen()
-    // LibraryScreen()
-
     return Scaffold(
       backgroundColor: Color.fromRGBO(49, 49, 49, 1.0),
-      body: SizedBox.expand(
-        child: LibraryScreen(), // hoặc SvgPicture.asset(...)
-      ),
+      body: SizedBox.expand(child: SplashScreen()),
     );
   }
 }

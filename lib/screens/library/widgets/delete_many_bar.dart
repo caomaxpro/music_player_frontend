@@ -1,40 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:music_player/screens/karaoke_track/ui/karaoke_track_buttons.dart';
 import 'package:music_player/screens/library/state/library_state.dart';
-import 'package:music_player/screens/library/ui/sortby_bar.dart';
+import 'package:music_player/screens/library/widgets/function_bar/sortby_bar.dart';
+import 'package:music_player/services/song_handler.dart';
 import 'package:music_player/state/setting_state.dart';
+import 'package:music_player/svg/custom_svg.dart';
 import 'package:music_player/svg/delete_svg.dart';
 import 'package:music_player/widgets/custom_button_icon.dart';
 
 class DeleteSingleBar extends ConsumerWidget {
-  final int itemCount;
-  final VoidCallback? onDelete;
   final VoidCallback? onClose;
 
-  const DeleteSingleBar({
-    super.key,
-    required this.itemCount,
-    this.onDelete,
-    this.onClose,
-  });
+  const DeleteSingleBar({super.key, this.onClose});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textColor = ref.watch(textColorProvider);
+    final selectedTrackIds = ref.watch(selectedTrackIdsProvider);
 
     return Row(
       children: [
         Text(
-          '$itemCount Item${itemCount != 1 ? "s" : ""}',
+          '${selectedTrackIds.length} Item${selectedTrackIds.length != 1 ? "s" : ""}',
           style: TextStyle(color: textColor, fontSize: 16),
         ),
         const Spacer(),
-        CustomIconButton(
+        FunctionButton(
           label: 'Delete',
-          labelColor: textColor,
-          icon: DeleteSvg(width: 24, height: 26, color: textColor),
-          onPressed: onDelete,
-          horizontalPadding: 8,
+          icon: CustomSvg(
+            rawSvg: deleteSvgString,
+            svgHeight: 18,
+            viewBoxHeight: 24,
+            color: Colors.redAccent, // màu riêng cho Delete
+          ),
+          function: LibraryFunction.delete,
+          onPressed: () {
+            ref.read(functionProvider.notifier).state = LibraryFunction.delete;
+          },
         ),
         const SizedBox(width: 12),
         CloseIconButton(

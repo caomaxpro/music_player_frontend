@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:music_player/services/song_handler.dart';
 import 'package:music_player/models/song.dart';
-import 'package:music_player/state/audio_state.dart';
 import 'package:music_player/state/setting_state.dart';
 import 'package:music_player/widgets/custom_scaffold.dart';
 

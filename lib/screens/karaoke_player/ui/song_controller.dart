@@ -5,7 +5,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:music_player/main.dart';
-import 'package:music_player/screens/karaoke/karaoke.dart';
 import 'package:music_player/screens/karaoke_player/ui/sound_wave.dart';
 import 'package:music_player/services/song_handler.dart';
 import 'package:music_player/state/audio_state.dart';
@@ -259,11 +258,11 @@ class _SongControllerState extends ConsumerState<SongController> {
             IconButton(
               icon: const Icon(Icons.mic_rounded),
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const KaraokeScreen(),
-                  ),
-                );
+                // Navigator.of(context).push(
+                //   MaterialPageRoute(
+                //     builder: (context) => const KaraokeScreen(),
+                //   ),
+                // );
               },
             ),
           ],

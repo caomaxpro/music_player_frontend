@@ -1,8 +1,5 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:music_player/models/song.dart';
-import 'package:music_player/services/song_handler.dart';
 import 'package:music_player/state/audio_state.dart';
 
 class SongInfo extends ConsumerStatefulWidget {
@@ -17,7 +14,7 @@ class SongInfo extends ConsumerStatefulWidget {
 
 class _SongInfoState extends ConsumerState<SongInfo> {
   String? lyrics;
-  String? albumArtUrl;
+  String? imagePath;
   bool isLoading = false;
   String? errorMessage;
   bool? internetConnection;
@@ -30,7 +27,7 @@ class _SongInfoState extends ConsumerState<SongInfo> {
     // Fetch data from local state
     final currentAudioFile = ref.read(currentAudioFileProvider);
     lyrics = currentAudioFile.lyrics;
-    albumArtUrl = currentAudioFile.audioImgUri;
+    imagePath = currentAudioFile.imagePath;
     isLoading = false;
   }
 
@@ -41,16 +38,16 @@ class _SongInfoState extends ConsumerState<SongInfo> {
     // Use default values if data is not available
     final title = currentAudioFile.title ?? 'Unknown Title';
     final artist = currentAudioFile.artist ?? 'Unknown Artist';
-    final albumArtUrl = currentAudioFile.audioImgUri;
+    final imagePath = currentAudioFile.imagePath;
 
     return Column(
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(16),
           child:
-              (albumArtUrl?.isNotEmpty ?? false)
+              (imagePath.isNotEmpty ?? false)
                   ? Image.network(
-                    albumArtUrl!,
+                    imagePath,
                     width: 220,
                     height: 220,
                     fit: BoxFit.cover,

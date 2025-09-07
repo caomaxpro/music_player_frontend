@@ -10,7 +10,7 @@
 //   ...
 // ]
 
-List<List<dynamic>> convertLyrics(List<List<String>> input) {
+List<List<dynamic>> convertLyrics(List<List<dynamic>> input) {
   final List<List<dynamic>> result = [];
   for (int i = 0; i < input.length; i++) {
     final start = input[i][0];
@@ -26,7 +26,7 @@ List<List<dynamic>> convertLyrics(List<List<String>> input) {
     // Nếu lyric không rỗng thì thêm vào result
     if (input[i][1].trim().isNotEmpty) {
       result.add([
-        [start, end],
+        [timeStringToMilliseconds(start), timeStringToMilliseconds(end)],
         input[i][1],
       ]);
     }

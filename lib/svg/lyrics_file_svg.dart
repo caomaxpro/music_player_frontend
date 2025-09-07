@@ -1,7 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:music_player/svg/custom_svg.dart';
-import 'package:music_player/svg/guitar_svg.dart';
 
 final lyricsFileSvg = '''
     <svg width="55" height="74" viewBox="0 0 55 74" fill="none" xmlns="http://www.w3.org/2000/svg">

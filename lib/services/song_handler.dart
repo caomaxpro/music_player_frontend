@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:music_player/main.dart';
 import 'package:music_player/models/song.dart';
+import 'package:music_player/objectbox.g.dart';
 import 'package:music_player/state/audio_state.dart';
 
 class SongHandler {
@@ -47,7 +48,7 @@ class SongHandler {
                   artist: updatedFields['artist'] ?? song.artist,
                   duration: updatedFields['duration'] ?? song.duration,
                   filePath: updatedFields['filePath'] ?? song.filePath,
-                  audioImgUri: updatedFields['audioImgUri'] ?? song.audioImgUri,
+                  imagePath: updatedFields['audioImgUri'] ?? song.imagePath,
                   lyrics: updatedFields['lyrics'] ?? song.lyrics,
                   amplitude: updatedFields['amplitude'] ?? song.amplitude,
                   vocalPath: updatedFields['vocalPath'] ?? song.vocalPath,
@@ -74,11 +75,20 @@ class SongHandler {
       song.artist = updatedSong.artist;
       song.duration = updatedSong.duration;
       song.filePath = updatedSong.filePath;
-      song.audioImgUri = updatedSong.audioImgUri;
-      song.lyrics = updatedSong.lyrics;
-      song.amplitude = updatedSong.amplitude;
       song.vocalPath = updatedSong.vocalPath;
       song.instrumentalPath = updatedSong.instrumentalPath;
+      song.imagePath = updatedSong.imagePath;
+      song.lyrics = updatedSong.lyrics;
+      song.amplitude = updatedSong.amplitude;
+      song.timestampLyrics = updatedSong.timestampLyrics;
+      song.storagePath = updatedSong.storagePath;
+      song.uuid = updatedSong.uuid;
+      song.createdDate = updatedSong.createdDate;
+      song.recentDate = updatedSong.recentDate;
+
+      // Handle ToMany relationship for recordings
+      song.recordings.clear();
+      song.recordings.addAll(updatedSong.recordings);
 
       // Save the updated object
       box.put(song);
@@ -100,6 +110,13 @@ class SongHandler {
   /// Delete: Xóa một bài hát theo ID
   bool deleteSong(int id) {
     return box.remove(id);
+  }
+
+  void deleteManySongsByIds(List<int> ids) {
+    final songsToDelete = box.query(Song_.id.oneOf(ids)).build().find();
+    for (final song in songsToDelete) {
+      box.remove(song.id);
+    }
   }
 
   void cleanSongData(WidgetRef ref, int id) {

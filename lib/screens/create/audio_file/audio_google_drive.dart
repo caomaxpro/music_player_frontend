@@ -128,7 +128,7 @@ class _AudioGoogleDriveScreenState extends State<AudioGoogleDriveScreen> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        fileName!,
+                        fileName,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 15,

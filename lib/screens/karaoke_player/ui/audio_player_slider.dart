@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_player/widgets/custom_slider.dart';
@@ -24,29 +26,52 @@ class _AudioPlayerSliderState extends State<AudioPlayerSlider> {
   Duration _duration = Duration.zero;
   PlayerState? _playerState;
 
+  late final StreamSubscription<Duration> _positionSubscription;
+  late final StreamSubscription<Duration?> _durationSubscription;
+  late final StreamSubscription<PlayerState> _playerStateSubscription;
+  late final StreamSubscription<double> _volumeSubscription;
+
   @override
   void initState() {
     super.initState();
 
-    widget.player.positionStream.listen((pos) {
-      setState(() => _position = pos);
+    _positionSubscription = widget.player.positionStream.listen((pos) {
+      if (mounted) {
+        setState(() => _position = pos);
+      }
     });
 
-    widget.player.durationStream.listen((dur) {
-      if (dur != null) setState(() => _duration = dur);
+    _durationSubscription = widget.player.durationStream.listen((dur) {
+      if (mounted && dur != null) {
+        setState(() => _duration = dur);
+      }
     });
 
-    widget.player.playerStateStream.listen((state) {
-      setState(() => _playerState = state);
+    _playerStateSubscription = widget.player.playerStateStream.listen((state) {
+      if (mounted) {
+        setState(() => _playerState = state);
+      }
     });
 
-    widget.player.volumeStream.listen((v) {
-      setState(() => _volume = v);
+    _volumeSubscription = widget.player.volumeStream.listen((v) {
+      if (mounted) {
+        setState(() => _volume = v);
+      }
     });
 
     _volume = widget.player.volume;
     _duration = widget.player.duration ?? Duration.zero;
     _position = widget.player.position;
+  }
+
+  @override
+  void dispose() {
+    // Cancel all subscriptions to avoid memory leaks
+    _positionSubscription.cancel();
+    _durationSubscription.cancel();
+    _playerStateSubscription.cancel();
+    _volumeSubscription.cancel();
+    super.dispose();
   }
 
   @override
